@@ -11,7 +11,8 @@ from app.services import data_service
 
 load_dotenv()
 
-
+# on startup of fastapi: load documents
+# on shutdown of fastapi: cleanup if needed
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """

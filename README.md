@@ -48,6 +48,37 @@ granbot-backend/
 └── README.md
 ```
 
+## Project flow in shotcut (PL)
+
+🇵🇱
+W main.py uruchamiamy główną aplikację FastAPI. Przy starcie aplikacji (w lifecycle) wczytujemy plik JSONL za pomocą data_service.load_documents(). Ten plik pełni rolę naszej “bazy danych” – wszystkie dokumenty są ładowane do pamięci. W main.py podpinamy też router z pliku sections_controller, dzięki czemu dostępne są endpointy API. Dodatkowo na początku wczytywany jest plik .env, żeby móc korzystać z takich zmiennych jak DATA_PATH czy TOP_K.
+
+W data_service mamy dwie rzeczy: metodę load_documents(), która przy starcie wczytuje wszystkie rekordy z pliku .jsonl do pamięci, oraz metodę pomocniczą get_all_documents(), która zwraca tę wczytaną listę dokumentów innym częściom aplikacji.
+
+W sections_controller definiujemy dwa endpointy:
+
+POST /generate-section
+
+GET /history/{company_id}
+
+W POST /generate-section robimy cały główny flow:
+
+Pobieramy wszystkie dokumenty z pamięci przez data_service.get_all_documents().
+
+Sprawdzamy, czy coś się w ogóle wczytało.
+
+Przekazujemy te dokumenty do retrieval_service, który wybiera najbardziej pasujące dokumenty na podstawie: company_id, section_type oraz tekstu podanego w żądaniu.
+
+Zwracamy tylko tyle najlepszych dokumentów, ile wynosi TOP_K ustawione w .env.
+
+Wybrane dokumenty przekazujemy do generation_service, który “ładnie” składa je w jedną odpowiedź tekstową. Tutaj moglibysmy uzyc llm do ulepszenia odpowiedzi.
+
+Gotowy wynik zapisujemy w historii, wywołując history_service.add_entry(...), który dodaje nowy wpis do listy trzymanej w pamięci (in-memory).
+
+Zwracamy gotową odpowiedź do klienta (tekst + sources + metadata).
+
+W GET /history/{company_id} po prostu pobieramy z history_service wpisy dla danej firmy metodą get_by_company_id(...) i zwracamy je – ta lista też jest trzymana w pamięci i symuluje prostą historię wywołań.
+
 ## Installation
 
 1. **Clone the repository** (if not already done)
