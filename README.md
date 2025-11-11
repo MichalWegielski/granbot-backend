@@ -65,6 +65,15 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+4. **Configure Environment**
+
+   Create a `.env` file in the root directory of the project and add the following variables. This file is used to configure the application.
+
+   ```
+   DATA_PATH=./data/grantbot_vector_seed.jsonl
+   TOP_K=3
+   ```
+
 ## Running the Application
 
 Start the server with uvicorn:
@@ -78,7 +87,6 @@ The API will be available at: `http://localhost:8000`
 **Interactive API documentation**:
 
 - Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
 
 ## API Endpoints
 
@@ -115,18 +123,6 @@ Generate a section by finding and combining relevant documents.
 }
 ```
 
-**cURL Example**:
-
-```bash
-curl -X POST "http://localhost:8000/generate-section" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "company_id": "123",
-    "section_type": "innovation_description",
-    "text": "AI automation SaaS RAG generator"
-  }'
-```
-
 ### 2. Get History
 
 **GET** `/history/{company_id}`
@@ -149,12 +145,6 @@ Retrieve generation history for a specific company.
     ]
   }
 ]
-```
-
-**cURL Example**:
-
-```bash
-curl -X GET "http://localhost:8000/history/123"
 ```
 
 ### 3. Health Check
