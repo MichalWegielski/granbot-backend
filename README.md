@@ -25,7 +25,6 @@ granbot-backend/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py              # FastAPI app initialization
-│   ├── config.py            # Configuration and environment variables
 │   ├── models/
 │   │   ├── __init__.py
 │   │   ├── domain.py        # Internal domain models
@@ -65,15 +64,6 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```bash
 pip install -r requirements.txt
 ```
-
-4. **Configure environment** (optional):
-   Copy `.env.example` to `.env` if you need to override defaults:
-
-```bash
-cp .env.example .env
-```
-
-The default configuration points to `./data/grantbot_vector_seed.jsonl`.
 
 ## Running the Application
 
@@ -213,7 +203,7 @@ The application reads documents from `./data/grantbot_vector_seed.jsonl`. Each l
 
 ## Configuration
 
-Configuration is managed in `app/config.py` and can be overridden via environment variables:
+Configuration is managed via environment variables. If a `.env` file is present in the root directory, it will be loaded at startup. You can use `.env.example` as a template.
 
 | Variable    | Default                             | Description                     |
 | ----------- | ----------------------------------- | ------------------------------- |
