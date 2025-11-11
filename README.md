@@ -221,14 +221,9 @@ Run tests with pytest:
 pytest
 ```
 
-Run with verbose output:
+## Supposed changes
 
-```bash
-pytest -v
-```
-
-Run with coverage:
-
-```bash
-pytest --cov=app
-```
+- In the current version, `generation_service` produces the final section by simply concatenating the retrieved documents and adding a short introduction. This intentionally keeps the solution dependency-free and reproducible.
+- As a future enhancement, `generation_service` could accept the retrieved documents and forward them to an external LLM (e.g. OpenAI, Anthropic) together with the user’s original text. The LLM would then return a polished, logically structured section that reuses the provided context.
+- The flow would stay the same (retrieve → generate), but the “generate” step would switch from string concatenation to “RAG-style” generation: pass top-k documents as context, instruct the model to stay grounded in these sources, and then return the model’s answer.
+- This should be implemented behind a feature flag or environment variable (e.g. `LLM_API_KEY`): if the key is present, use LLM; if not, fall back to the current concatenation-based approach.
