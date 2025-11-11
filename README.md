@@ -193,25 +193,7 @@ Simple health check endpoint.
 }
 ```
 
-## Data Source
-
-The application reads documents from `./data/grantbot_vector_seed.jsonl`. Each line in this file is a JSON object with the following structure:
-
-```json
-{
-  "id": "doc-123-innovation-1",
-  "company_id": "123",
-  "section_type": "innovation_description",
-  "language": "pl",
-  "tags": ["AI", "SaaS"],
-  "source_type": "knowledge_base",
-  "source_url": null,
-  "created_at": "2025-09-18T07:03:20.577543Z",
-  "text": "Document content here..."
-}
-```
-
-## How It Works
+## How It Works (similar to PL description above)
 
 1. **Startup**: Documents are loaded from the JSONL file into memory
 2. **Request**: Client sends company_id, section_type, and query text
@@ -250,27 +232,3 @@ Run with coverage:
 ```bash
 pytest --cov=app
 ```
-
-## Important Notes
-
-- **No LLM Integration**: This version uses simple text concatenation, no external AI models
-- **In-Memory Storage**: History is stored in memory and lost on restart
-- **No Persistence**: No database - all data comes from the JSONL file
-- **Simple Similarity**: Uses word overlap counting, not advanced embeddings
-- **Document Fallback**: If no documents match company_id + section_type, falls back to company_id only
-
-## Future Enhancements
-
-Potential improvements for future versions:
-
-- LLM integration for better text generation
-- Database for persistent history
-- TF-IDF or embedding-based similarity
-- Caching layer for repeated queries
-- Authentication/authorization
-- Rate limiting
-- Docker containerization
-
-## License
-
-[Specify your license here]
