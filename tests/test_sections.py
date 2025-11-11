@@ -5,10 +5,15 @@ import pytest
 from fastapi.testclient import TestClient
 from app.main import app
 
-client = TestClient(app)
+
+@pytest.fixture
+def client():
+    """Create a TestClient instance for the app."""
+    with TestClient(app) as client:
+        yield client
 
 
-def test_generate_section_success():
+def test_generate_section_success(client):
     """Test POST /generate-section with valid request."""
     request_data = {
         "company_id": "123",
@@ -38,7 +43,7 @@ def test_generate_section_success():
     assert len(data["sources"]) > 0
 
 
-def test_generate_section_missing_field():
+def test_generate_section_missing_field(client):
     """Test POST /generate-section with missing required field."""
     request_data = {
         "company_id": "123",
@@ -52,7 +57,7 @@ def test_generate_section_missing_field():
     assert response.status_code == 422
 
 
-def test_generate_section_empty_text():
+def test_generate_section_empty_text(client):
     """Test POST /generate-section with empty text field."""
     request_data = {
         "company_id": "123",
@@ -67,7 +72,7 @@ def test_generate_section_empty_text():
     assert response.status_code == 200
 
 
-def test_history_after_generation():
+def test_history_after_generation(client):
     """Test GET /history/{company_id} after making a generation request."""
     # First, make a generation request
     request_data = {
@@ -82,7 +87,7 @@ def test_history_after_generation():
     request_id = gen_data["request_id"]
     
     # Now get history for this company
-    history_response = client.get("/history/456")
+    history_response = client.get(f"/history/{request_data['company_id']}")
     assert history_response.status_code == 200
     
     history_data = history_response.json()
@@ -103,7 +108,7 @@ def test_history_after_generation():
     assert found, "Generated request not found in history"
 
 
-def test_history_empty_company():
+def test_history_empty_company(client):
     """Test GET /history/{company_id} for company with no history."""
     # Use a company ID that likely doesn't have history
     response = client.get("/history/nonexistent-company-999")
@@ -115,7 +120,7 @@ def test_history_empty_company():
     # (might not be empty if other tests ran first)
 
 
-def test_root_endpoint():
+def test_root_endpoint(client):
     """Test GET / root endpoint."""
     response = client.get("/")
     
