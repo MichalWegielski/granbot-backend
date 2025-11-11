@@ -2,7 +2,7 @@
 Routes/endpoints for section generation and history.
 """
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 from fastapi import APIRouter, HTTPException
 import os
@@ -57,7 +57,7 @@ def generate_section(request: GenerateSectionRequest) -> GenerateSectionResponse
     
     # Create metadata
     request_id = str(uuid.uuid4())
-    created_at = datetime.utcnow().isoformat() + "Z"
+    created_at = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     sources = [doc.id for doc in top_documents]
     
     # Save to history
